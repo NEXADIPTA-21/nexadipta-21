@@ -7,6 +7,14 @@
   },
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/api/router.php?path=/index.php"
+    },
+    {
+      "source": "/nexadipta-21/",
+      "destination": "/api/router.php?path=/nexadipta-21/index.php"
+    },
+    {
       "source": "/(.*\\.php)",
       "destination": "/api/router.php?path=/$1"
     }
