@@ -1,60 +1,69 @@
 <?php
 
-/**
- * SKANEXA - Vercel PHP Router
- *
- * Semua halaman PHP diarahkan melalui file ini.
- */
-
 declare(strict_types=1);
 
-// Ambil path yang dikirim oleh Vercel.
-$path = (string)($_GET['path'] ?? '/');
+/**
+ * SKANEXA PHP entrypoint for Vercel
+ */
 
-// Bersihkan path.
-$path = rawurldecode($path);
-$path = '/' . ltrim($path, '/');
-$path = preg_replace('#/+#', '/', $path);
+// Ambil URL path asli yang diminta browser.
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 
-// Hilangkan query string jika ikut terbawa.
-$path = strtok($path, '?') ?: '/';
+// Hilangkan query string.
+$path = parse_url($requestUri, PHP_URL_PATH);
 
-// Halaman utama.
-if ($path === '/' || $path === '') {
-    $path = '/index.php';
+if (!is_string($path) || $path === '') {
+    $path = '/';
 }
 
-// Hanya izinkan file PHP.
-if (!preg_match('/\.php$/i', $path)) {
+// Normalisasi path.
+$path = '/' . ltrim(rawurldecode($path), '/');
+
+// Halaman utama.
+if ($path === '/') {
+    $target = '/index.php';
+}
+// Website NEXADIPTA 21.
+elseif ($path === '/nexadipta-21' || $path === '/nexadipta-21/') {
+    $target = '/nexadipta-21/index.php';
+}
+// Request PHP lainnya.
+elseif (preg_match('#\.php$#i', $path)) {
+    $target = $path;
+}
+// Selain PHP tidak dijalankan oleh router.
+else {
     http_response_code(404);
     exit('Not Found');
 }
 
-// Tentukan lokasi file PHP sebenarnya.
+// Root project.
 $root = realpath(__DIR__ . '/..');
-$target = realpath($root . $path);
 
-// Pastikan file berada di dalam project.
-if (
-    $root === false ||
-    $target === false ||
-    !str_starts_with($target, $root . DIRECTORY_SEPARATOR) ||
-    !is_file($target)
-) {
-    http_response_code(404);
-    exit('PHP file not found');
+if ($root === false) {
+    http_response_code(500);
+    exit('Project root not found');
 }
 
-// Pastikan yang dijalankan memang PHP.
-if (strtolower(pathinfo($target, PATHINFO_EXTENSION)) !== 'php') {
+// Lokasi file PHP tujuan.
+$file = realpath($root . $target);
+
+// Pastikan file ada.
+if ($file === false || !is_file($file)) {
     http_response_code(404);
-    exit('Invalid file type');
+    exit('PHP file not found: ' . htmlspecialchars($target));
 }
 
-// Beri tahu aplikasi PHP file/path yang sedang dipanggil.
-$_SERVER['SCRIPT_NAME'] = $path;
-$_SERVER['PHP_SELF'] = $path;
-$_SERVER['SCRIPT_FILENAME'] = $target;
+// Pastikan file tetap berada di dalam project.
+if (!str_starts_with($file, $root . DIRECTORY_SEPARATOR)) {
+    http_response_code(403);
+    exit('Forbidden');
+}
 
-// Jalankan file PHP asli.
-require $target;
+// Beri informasi path kepada aplikasi.
+$_SERVER['SCRIPT_NAME'] = $target;
+$_SERVER['PHP_SELF'] = $target;
+$_SERVER['SCRIPT_FILENAME'] = $file;
+
+// Jalankan PHP asli.
+require $file;
