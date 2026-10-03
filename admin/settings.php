@@ -35,19 +35,38 @@ function redirect_edit_poll(int $pollId, string $anchor = ''): void
 function handle_question_image_upload(?array $file): ?string
 {
     if (empty($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) return null;
-    if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) throw new RuntimeException('Upload gambar pertanyaan gagal.');
-    if (($file['size'] ?? 0) > MAX_UPLOAD_SIZE) throw new RuntimeException('Ukuran gambar pertanyaan maksimal 3MB.');
-    $allowed = ['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp'];
+    if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+        throw new RuntimeException('Upload gambar pertanyaan gagal.');
+    }
+    if (($file['size'] ?? 0) > MAX_UPLOAD_SIZE) {
+        throw new RuntimeException('Ukuran gambar pertanyaan maksimal 3MB.');
+    }
+
+    $allowed = [
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+        'image/webp' => 'webp',
+    ];
+
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $mime = $finfo->file($file['tmp_name']);
-    if (!isset($allowed[$mime])) throw new RuntimeException('Gambar pertanyaan harus JPG, PNG, atau WEBP.');
-    if (!is_dir(QUESTION_UPLOAD_DIR) && !mkdir(QUESTION_UPLOAD_DIR, 0755, true) && !is_dir(QUESTION_UPLOAD_DIR)) {
-        throw new RuntimeException('Folder gambar pertanyaan tidak dapat dibuat.');
+
+    if (!isset($allowed[$mime])) {
+        throw new RuntimeException('Gambar pertanyaan harus JPG, PNG, atau WEBP.');
     }
-    $filename = bin2hex(random_bytes(12)).'.'.$allowed[$mime];
-    $dest = QUESTION_UPLOAD_DIR.$filename;
-    if (!move_uploaded_file($file['tmp_name'], $dest)) throw new RuntimeException('Gagal menyimpan gambar pertanyaan.');
-    return QUESTION_UPLOAD_URL.$filename;
+
+    if (!is_uploaded_file($file['tmp_name'])) {
+        throw new RuntimeException('File gambar pertanyaan tidak valid.');
+    }
+
+    $filename = bin2hex(random_bytes(12)) . '.' . $allowed[$mime];
+    $storagePath = 'questions/' . $filename;
+
+    return supabase_storage_upload(
+        $file['tmp_name'],
+        $storagePath,
+        $mime
+    );
 }
 
 function remove_question_image(?string $url): void
@@ -62,19 +81,38 @@ function remove_question_image(?string $url): void
 function handle_option_image_upload(?array $file): ?string
 {
     if (empty($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) return null;
-    if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) throw new RuntimeException('Upload gambar jawaban gagal.');
-    if (($file['size'] ?? 0) > MAX_UPLOAD_SIZE) throw new RuntimeException('Ukuran gambar jawaban maksimal 3MB.');
-    $allowed = ['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp'];
+    if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+        throw new RuntimeException('Upload gambar jawaban gagal.');
+    }
+    if (($file['size'] ?? 0) > MAX_UPLOAD_SIZE) {
+        throw new RuntimeException('Ukuran gambar jawaban maksimal 3MB.');
+    }
+
+    $allowed = [
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+        'image/webp' => 'webp',
+    ];
+
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $mime = $finfo->file($file['tmp_name']);
-    if (!isset($allowed[$mime])) throw new RuntimeException('Gambar jawaban harus JPG, PNG, atau WEBP.');
-    if (!is_dir(OPTION_UPLOAD_DIR) && !mkdir(OPTION_UPLOAD_DIR, 0755, true) && !is_dir(OPTION_UPLOAD_DIR)) {
-        throw new RuntimeException('Folder gambar jawaban tidak dapat dibuat.');
+
+    if (!isset($allowed[$mime])) {
+        throw new RuntimeException('Gambar jawaban harus JPG, PNG, atau WEBP.');
     }
-    $filename = bin2hex(random_bytes(12)).'.'.$allowed[$mime];
-    $dest = OPTION_UPLOAD_DIR.$filename;
-    if (!move_uploaded_file($file['tmp_name'], $dest)) throw new RuntimeException('Gagal menyimpan gambar jawaban.');
-    return OPTION_UPLOAD_URL.$filename;
+
+    if (!is_uploaded_file($file['tmp_name'])) {
+        throw new RuntimeException('File gambar jawaban tidak valid.');
+    }
+
+    $filename = bin2hex(random_bytes(12)) . '.' . $allowed[$mime];
+    $storagePath = 'options/' . $filename;
+
+    return supabase_storage_upload(
+        $file['tmp_name'],
+        $storagePath,
+        $mime
+    );
 }
 
 function remove_option_image(?string $url): void
