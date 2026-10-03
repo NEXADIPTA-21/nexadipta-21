@@ -25,6 +25,15 @@ define('APP_SECRET', env_value('APP_SECRET', ''));
 
 // Supabase project URL is public information; service/database secrets are not.
 define('SUPABASE_URL', rtrim((string)env_value('SUPABASE_URL', 'https://eqagkoebmwrslwbityvu.supabase.co'), '/'));
+define(
+    'SUPABASE_SERVICE_ROLE_KEY',
+    env_value('SUPABASE_SERVICE_ROLE_KEY', '')
+);
+
+define(
+    'SUPABASE_STORAGE_BUCKET',
+    env_value('SUPABASE_STORAGE_BUCKET', 'skanexa-media')
+);
 define('SUPABASE_STORAGE_BUCKET', env_value('SUPABASE_STORAGE_BUCKET', 'skanexa-media'));
 
 // Upload paths are kept as logical prefixes. Persistent uploads will be moved
