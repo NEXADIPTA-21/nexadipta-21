@@ -1,0 +1,7 @@
+database/schema.sql
+database/migration_v10.sql
+*.zip
+.env
+.env.*
+.git
+.git/**

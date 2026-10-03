@@ -1,0 +1,20 @@
+# Cegah akses langsung ke file konfigurasi dan folder internal
+<FilesMatch "^(config\.php)$">
+  Require all denied
+</FilesMatch>
+
+Options -Indexes
+
+# Paksa HTTPS jika sertifikat SSL sudah aktif di cPanel (aktifkan baris di bawah jika perlu)
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Naikkan batas upload foto polling (abaikan jika host menolak php_value)
+<IfModule mod_php.c>
+  php_value upload_max_filesize 5M
+  php_value post_max_size 160M
+  php_value max_file_uploads 60
+  php_value max_execution_time 300
+  php_value memory_limit 256M
+</IfModule>

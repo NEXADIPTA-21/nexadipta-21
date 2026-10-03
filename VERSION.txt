@@ -1,0 +1,33 @@
+V12.5 + homepage fix
+
+Perapihan & perbaikan CSS:
+- Bug CSS --text2:var(--text2) diperbaiki (self-reference).
+- Tema terang dirombak total: background lavender lembut (#f5f3f9), kontras lebih kalem, aksen ungu.
+- Primary diganti dari teal keras ke ungu lembut (#7c6af0 / #6354d4).
+- Mode malam diselaraskan ke palet ungu malam.
+- theme-color meta disesuaikan.
+- Dot pattern & radial glow dikurangi intensitasnya agar tidak menyakitkan mata.
+- Card jam/tanggal dipindah ke atas konten (di luar header & footer).
+- Perbaikan admin/voters.php: SQL linked_to_poll tidak lagi merujuk alias pp saat polling belum dipilih (penyebab HTTP 500).
+
+Perbaikan lanjutan V12.5 - clock & audit log:
+- Jam/tanggal overlay dibuat lebih kontras dan mudah dibaca pada mode terang maupun gelap.
+- Radius jam dibuat penuh agar tidak terlihat terpotong pada sisi kanan/kiri.
+- Ukuran dan batas lebar dibuat responsif agar tidak keluar viewport.
+- Audit log dibuat lebih tahan terhadap deployment lama dengan auto-create tabel bila tabel belum tersedia.
+- Semua perubahan Website Angkatan (beranda, timeline, galeri, kontak) sekarang dicatat ke audit_logs.
+- Login berhasil, login gagal, dan logout admin sekarang dicatat ke audit_logs.
+- Filter Audit Log ditambah untuk entity website dan questionnaire.
+- Kode PHP admin/website.php dirapikan dan diberi penanganan error/log yang lebih jelas.
+
+Homepage fix:
+- Beranda (/) = NEXADIPTA 21 (redirect ke /nexadipta-21/).
+- Sistem polling entry dipindah ke /poll.php.
+- Admin tetap di /admin/login.php dan /admin/ diarahkan ke login.
+- Path aset nexadipta-21 disesuaikan untuk mode subdirektori.
+
+
+UI fix (success check, clock light theme, bulk assign peserta):
+- Ikon centang (✓) di halaman sukses polling.
+- Jam/tanggal mode terang: background putih, teks gelap; mode gelap tetap kontras.
+- Data Peserta: tombol "Tambah yang dicentang" dan "Tambah semua siswa aktif" ke polling terpilih.
