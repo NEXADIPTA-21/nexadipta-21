@@ -39,35 +39,31 @@ define('MAX_UPLOAD_SIZE', 3 * 1024 * 1024);
 
 date_default_timezone_set(APP_TIMEZONE);
 
-if (APP_SECRET === '') {
-    // A deterministic fallback keeps local development possible, but Vercel
-    // should always receive a random APP_SECRET environment variable.
-    define('EFFECTIVE_APP_SECRET', hash('sha256', SUPABASE_URL . '|skanexa-local'));
-} else {
-    define('EFFECTIVE_APP_SECRET', APP_SECRET);
+/*
+ * Effective application secret.
+ *
+ * Pastikan constant hanya dibuat satu kali.
+ */
+if (!defined('EFFECTIVE_APP_SECRET')) {
+    if (APP_SECRET === '') {
+        define(
+            'EFFECTIVE_APP_SECRET',
+            hash('sha256', SUPABASE_URL . '|skanexa-local')
+        );
+    } else {
+        define(
+            'EFFECTIVE_APP_SECRET',
+            APP_SECRET
+        );
+    }
 }
 
-if (session_status() === PHP_SESSION_NONE) {
-    $cookieSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
-    session_set_cookie_params([
-        'lifetime' => 0,
-        'path' => '/',
-        'httponly' => true,
-        'samesite' => 'Lax',
-        'secure' => $cookieSecure,
-    ]);
-    session_start();
-}
-
-if (APP_SECRET === '') {
-    define(
-        'EFFECTIVE_APP_SECRET',
-        hash('sha256', SUPABASE_URL . '|skanexa-local')
-    );
-} else {
-    define('EFFECTIVE_APP_SECRET', APP_SECRET);
-}
-
+/*
+ * Database-backed session untuk Vercel/serverless.
+ *
+ * PENTING:
+ * session handler HARUS dipasang sebelum session_start().
+ */
 if (session_status() === PHP_SESSION_NONE) {
     require_once __DIR__ . '/includes/session_handler.php';
 
