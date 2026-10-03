@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
+require_once dirname(__DIR__) . '/includes/supabase_storage.php';
 admin_require_login();
 
 $pdo = get_db();
