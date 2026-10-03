@@ -148,9 +148,34 @@ function save_poll_settings(PDO $pdo, int $pollId, int $allowChangeVote, int $sh
     $settingsId = $find->fetchColumn();
 
     if (!$settingsId) {
-        // Insert hanya poll_id agar DEFAULT/NULL kolom lain pada schema lama
-        // yang masih ada tidak menyebabkan jumlah nilai tidak cocok (SQL 1136).
-        $pdo->prepare('INSERT INTO poll_settings (poll_id) VALUES (?)')->execute([$pollId]);
+        // Isi semua kolom penting secara eksplisit. Pada PostgreSQL hasil
+        // migrasi lama bisa memiliki kolom NOT NULL tanpa DEFAULT.
+        $insertColumns = ['poll_id', 'allow_change_vote', 'show_results', 'randomize_candidates'];
+        $insertValues = [$pollId, $allowChangeVote, $showResults, $randomizeCandidates];
+
+        if (isset($columns['min_choices'])) {
+            $insertColumns[] = 'min_choices';
+            $insertValues[] = 1;
+        }
+
+        if (isset($columns['max_choices'])) {
+            $insertColumns[] = 'max_choices';
+            $insertValues[] = 1;
+        }
+
+        if (isset($columns['max_questions'])) {
+            $insertColumns[] = 'max_questions';
+            $insertValues[] = $maxQuestions;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($insertColumns), '?'));
+
+        $pdo->prepare(
+            'INSERT INTO poll_settings ('
+            . implode(',', $insertColumns)
+            . ') VALUES (' . $placeholders . ')'
+        )->execute($insertValues);
+
         $settingsId = db_last_insert_id($pdo);
     }
 
