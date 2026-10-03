@@ -5,14 +5,18 @@
       "maxDuration": 60
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/",
-      "destination": "/api/index.php?path=/index.php"
+      "src": "/",
+      "dest": "/api/index.php"
     },
     {
-      "source": "/(.*\\.php)",
-      "destination": "/api/index.php?path=/$1"
+      "src": "/nexadipta-21/?",
+      "dest": "/api/index.php"
+    },
+    {
+      "src": "/(.*\\.php)",
+      "dest": "/api/index.php"
     }
   ]
 }
