@@ -29,11 +29,6 @@ define(
     'SUPABASE_SERVICE_ROLE_KEY',
     env_value('SUPABASE_SERVICE_ROLE_KEY', '')
 );
-
-define(
-    'SUPABASE_STORAGE_BUCKET',
-    env_value('SUPABASE_STORAGE_BUCKET', 'skanexa-media')
-);
 define('SUPABASE_STORAGE_BUCKET', env_value('SUPABASE_STORAGE_BUCKET', 'skanexa-media'));
 
 // Upload paths are kept as logical prefixes. Persistent uploads will be moved
