@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/router.php": {
+    "api/index.php": {
       "runtime": "vercel-php@0.9.0",
       "maxDuration": 60
     }
@@ -8,15 +8,11 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/api/router.php?path=/index.php"
-    },
-    {
-      "source": "/nexadipta-21/",
-      "destination": "/api/router.php?path=/nexadipta-21/index.php"
+      "destination": "/api/index.php?path=/index.php"
     },
     {
       "source": "/(.*\\.php)",
-      "destination": "/api/router.php?path=/$1"
+      "destination": "/api/index.php?path=/$1"
     }
   ]
 }
