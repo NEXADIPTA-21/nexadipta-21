@@ -59,6 +59,41 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (APP_SECRET === '') {
+    define(
+        'EFFECTIVE_APP_SECRET',
+        hash('sha256', SUPABASE_URL . '|skanexa-local')
+    );
+} else {
+    define('EFFECTIVE_APP_SECRET', APP_SECRET);
+}
+
+if (session_status() === PHP_SESSION_NONE) {
+    require_once __DIR__ . '/includes/session_handler.php';
+
+    $sessionHandler = new SkanexaDatabaseSessionHandler();
+
+    session_set_save_handler(
+        $sessionHandler,
+        true
+    );
+
+    $cookieSecure = (
+        !empty($_SERVER['HTTPS']) &&
+        $_SERVER['HTTPS'] !== 'off'
+    );
+
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure' => $cookieSecure,
+    ]);
+
+    session_start();
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', '0');
 ini_set('log_errors', '1');
