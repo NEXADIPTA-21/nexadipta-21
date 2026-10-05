@@ -69,83 +69,169 @@ include __DIR__ . '/includes/header.php';
 
             <?php if ($p['poll_type'] === 'questionnaire'): ?>
 
-                <!-- =========================
-                     HASIL QUESTIONNAIRE
-                ========================== -->
+<article class="result-card questionnaire-result-card">
 
-                <article class="result-card">
+    <span class="poll-status">
+        QUESTIONNAIRE
+    </span>
 
-                    <span class="poll-status">
-                        QUESTIONNAIRE
-                    </span>
+    <h3>
+        <?= e($p['title']) ?>
+    </h3>
 
-                    <h3>
-                        <?= e($p['title']) ?>
-                    </h3>
+    <?php foreach ($rows as $q): ?>
 
+        <?php
+        $questionTotal = 0;
 
-                    <?php foreach ($rows as $q): ?>
+        foreach ($q['options'] as $o) {
+            $questionTotal += (int)$o['vote_count'];
+        }
+        ?>
 
-                        <?php
-                        $questionTotal = 0;
+        <div class="mini-question">
 
-                        foreach ($q['options'] as $o) {
-                            $questionTotal += (int)$o['vote_count'];
-                        }
-                        ?>
+            <h4>
+                <?= e($q['question']) ?>
+            </h4>
 
+            <div class="question-result-list">
 
-                        <div class="mini-question">
+                <?php
+                $position = 0;
+                $lastVoteCount = null;
+                $rank = 0;
+                ?>
 
-                            <h4>
-                                <?= e($q['question']) ?>
-                            </h4>
+                <?php foreach ($q['options'] as $o): ?>
 
+                    <?php
+                    $position++;
 
-                            <?php foreach ($q['options'] as $o): ?>
+                    $voteCount = (int)$o['vote_count'];
 
-                                <?php
-                                $voteCount = (int)$o['vote_count'];
+                    /*
+                     * Ranking kompetisi:
+                     * 1, 2, 2, 4
+                     */
+                    if (
+                        $lastVoteCount === null ||
+                        $voteCount < $lastVoteCount
+                    ) {
+                        $rank = $position;
+                    }
 
-                                $percentage = $questionTotal > 0
-                                    ? round(($voteCount / $questionTotal) * 100, 1)
-                                    : 0;
-                                ?>
+                    $lastVoteCount = $voteCount;
 
+                    $percentage = $questionTotal > 0
+                        ? round(
+                            ($voteCount / $questionTotal) * 100,
+                            1
+                        )
+                        : 0;
 
-                                <div class="chart-row">
+                    $imageUrl = trim(
+                        (string)($o['image_url'] ?? '')
+                    );
+                    ?>
 
-                                    <div class="chart-label">
-                                        <?= e($o['option_text']) ?>
-                                    </div>
+                    <div class="question-option-result">
 
-                                    <div class="chart-track">
+                        <div class="question-option-rank">
+                            <?= $rank ?>
+                        </div>
 
-                                        <div
-                                            class="chart-fill"
-                                            style="width: <?= max(
-                                                $percentage,
-                                                $voteCount > 0 ? 4 : 0
-                                            ) ?>%;"
-                                        >
-                                            <?= $percentage ?>%
-                                        </div>
+                        <div class="question-option-photo">
 
-                                    </div>
+                            <?php if ($imageUrl !== ''): ?>
 
-                                    <div class="chart-count">
-                                        <?= $voteCount ?>
-                                    </div>
+                                <img
+                                    src="<?= e($imageUrl) ?>"
+                                    alt="<?= e($o['option_text']) ?>"
+                                    loading="lazy"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                >
 
+                                <div
+                                    class="question-option-no-photo"
+                                    style="display:none;"
+                                >
+                                    📷
                                 </div>
 
-                            <?php endforeach; ?>
+                            <?php else: ?>
+
+                                <div class="question-option-no-photo">
+                                    📷
+                                </div>
+
+                            <?php endif; ?>
 
                         </div>
 
-                    <?php endforeach; ?>
+                        <div class="question-option-info">
 
-                </article>
+                            <div class="question-option-heading">
+
+                                <strong>
+                                    <?= e($o['option_text']) ?>
+                                </strong>
+
+                                <?php if ($rank === 1 && $voteCount > 0): ?>
+
+                                    <span class="question-winner">
+                                        🏆 TERBANYAK
+                                    </span>
+
+                                <?php endif; ?>
+
+                            </div>
+
+                            <div class="question-option-votes">
+
+                                <strong>
+                                    <?= $voteCount ?>
+                                </strong>
+
+                                <span>vote</span>
+
+                                <span>•</span>
+
+                                <span>
+                                    <?= $percentage ?>%
+                                </span>
+
+                            </div>
+
+                            <div class="chart-track">
+
+                                <div
+                                    class="chart-fill"
+                                    style="width:<?= max(
+                                        $percentage,
+                                        $voteCount > 0 ? 4 : 0
+                                    ) ?>%"
+                                >
+                                    <?= $percentage ?>%
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <?php endforeach; ?>
+
+            </div>
+
+        </div>
+
+    <?php endforeach; ?>
+
+</article>
+
+<?php else: ?>
 
 
             <?php else: ?>
