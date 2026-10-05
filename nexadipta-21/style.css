@@ -843,3 +843,38 @@ html[data-theme="dark"] .rich-copy{color:var(--text2)}
     }
 
 }
+
+.question-result-list{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.question-option-result{display:grid;grid-template-columns:42px 90px minmax(0,1fr);gap:14px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--card);transition:.2s}
+.question-option-result:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:rgba(124,106,240,.35)}
+.question-option-rank{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--soft);color:var(--primary-dark);font-size:14px;font-weight:900}
+.question-option-photo{width:90px;height:90px;overflow:hidden;border-radius:14px;background:var(--soft);border:1px solid var(--line)}
+.question-option-photo img{width:100%;height:100%;display:block;object-fit:cover}
+.question-option-no-photo{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:25px}
+.question-option-info{min-width:0}
+.question-option-heading{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.question-option-heading strong{font-size:16px;color:var(--text)}
+.question-winner{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(124,106,240,.12);color:var(--primary-dark);font-size:9px;font-weight:900}
+.question-option-votes{display:flex;align-items:center;gap:6px;margin-bottom:7px;color:var(--muted);font-size:12px}
+.question-option-votes strong{color:var(--primary-dark);font-size:14px}
+.question-option-result .chart-track{width:100%;height:12px;overflow:hidden;border-radius:999px;background:var(--track)}
+.question-option-result .chart-fill{height:100%;display:flex;align-items:center;padding-left:6px;border-radius:999px;background:var(--grad);color:#fff;font-size:9px;font-weight:800;white-space:nowrap}
+.photo-results-list{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.photo-result-row{display:grid;grid-template-columns:42px 90px minmax(0,1fr);gap:14px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--card);transition:.2s}
+.photo-result-row:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:rgba(124,106,240,.35)}
+.photo-result-rank{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--soft);color:var(--primary-dark);font-size:14px;font-weight:900}
+.photo-result-image{width:90px;height:90px;overflow:hidden;border-radius:14px;background:var(--soft);border:1px solid var(--line)}
+.photo-result-image img{width:100%;height:100%;display:block;object-fit:cover}
+.photo-result-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:25px}
+.photo-result-content{min-width:0}
+.photo-result-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:7px}
+.photo-result-title>div:first-child{min-width:0}
+.photo-result-title h4{margin:0 0 5px;font-size:16px;color:var(--text);overflow-wrap:anywhere}
+.winner-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(124,106,240,.12);color:var(--primary-dark);font-size:9px;font-weight:900}
+.photo-result-votes{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:12px;white-space:nowrap}
+.photo-result-votes strong{color:var(--primary-dark);font-size:15px}
+.photo-result-percentage{display:flex;justify-content:flex-end;margin-bottom:5px;color:var(--muted);font-size:11px;font-weight:700}
+.photo-result-track{width:100%;height:12px;overflow:hidden;border-radius:999px;background:var(--track)}
+.photo-result-fill{height:100%;border-radius:999px;background:var(--grad);transition:width .6s ease}
+.photo-result-winner{border-color:rgba(124,106,240,.5);box-shadow:0 8px 24px -16px rgba(99,84,212,.7)}
+@media(max-width:600px){.question-option-result,.photo-result-row{grid-template-columns:34px 70px minmax(0,1fr);gap:9px;padding:9px}.question-option-rank,.photo-result-rank{width:32px;height:32px;border-radius:9px;font-size:12px}.question-option-photo,.photo-result-image{width:70px;height:70px;border-radius:11px}.question-option-heading strong,.photo-result-title h4{font-size:14px}.question-winner,.winner-badge{font-size:8px;padding:3px 6px}.photo-result-title{gap:7px}.photo-result-votes{font-size:11px}}
