@@ -601,3 +601,245 @@ html[data-theme="dark"] .rich-copy{color:var(--text2)}
     }
 
 }
+
+/* ==========================================
+   HASIL QUESTIONNAIRE DENGAN FOTO
+   ========================================== */
+
+.question-result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.question-option-result {
+    display: grid;
+    grid-template-columns: 42px 90px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+
+    padding: 12px;
+
+    border: 1px solid var(--line);
+    border-radius: 16px;
+
+    background: var(--card);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+.question-option-result:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    border-color: rgba(124, 106, 240, .35);
+}
+
+/* Ranking */
+
+.question-option-rank {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: var(--soft);
+
+    color: var(--primary-dark);
+
+    font-size: 14px;
+    font-weight: 900;
+}
+
+/* Foto */
+
+.question-option-photo {
+    width: 90px;
+    height: 90px;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    background: var(--soft);
+
+    border: 1px solid var(--line);
+}
+
+.question-option-photo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+.question-option-no-photo {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--muted);
+
+    font-size: 25px;
+}
+
+/* Informasi */
+
+.question-option-info {
+    min-width: 0;
+}
+
+.question-option-heading {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 6px;
+}
+
+.question-option-heading strong {
+    font-size: 16px;
+
+    color: var(--text);
+}
+
+/* Label pemenang */
+
+.question-winner {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 4px 8px;
+
+    border-radius: 999px;
+
+    background: rgba(124, 106, 240, .12);
+
+    color: var(--primary-dark);
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: .03em;
+}
+
+/* Vote */
+
+.question-option-votes {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-bottom: 7px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+.question-option-votes strong {
+    color: var(--primary-dark);
+
+    font-size: 14px;
+}
+
+/* Bar */
+
+.question-option-result .chart-track {
+    width: 100%;
+
+    height: 12px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: var(--track);
+}
+
+.question-option-result .chart-fill {
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    padding-left: 6px;
+
+    border-radius: 999px;
+
+    background: var(--grad);
+
+    color: #fff;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    transition: width .6s ease;
+}
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+
+@media (max-width: 600px) {
+
+    .question-option-result {
+        grid-template-columns: 34px 70px minmax(0, 1fr);
+
+        gap: 9px;
+
+        padding: 9px;
+    }
+
+    .question-option-rank {
+        width: 32px;
+        height: 32px;
+
+        border-radius: 9px;
+
+        font-size: 12px;
+    }
+
+    .question-option-photo {
+        width: 70px;
+        height: 70px;
+
+        border-radius: 11px;
+    }
+
+    .question-option-heading strong {
+        font-size: 14px;
+    }
+
+    .question-winner {
+        font-size: 8px;
+
+        padding: 3px 6px;
+    }
+
+}
