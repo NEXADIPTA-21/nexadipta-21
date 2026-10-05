@@ -445,23 +445,68 @@ function poll_questionnaire_done(int $pollId, int $participantId): bool
     }
 }
 
-/** Hasil per pertanyaan untuk polling questionnaire (jawaban final saja). */
+/**
+ * Hasil per pertanyaan untuk polling questionnaire.
+ * Menyertakan foto jawaban dan mengurutkan berdasarkan vote terbanyak.
+ */
 function get_questionnaire_result_rows(int $pollId): array
 {
     $pdo = get_db();
+
     ensure_questionnaire_schema($pdo);
-    $qs = $pdo->prepare('SELECT id, question_text FROM poll_questions WHERE poll_id = ? AND status = \'active\' ORDER BY sort_order, id');
-    $qs->execute([$pollId]);
-    $out = [];
-    $os = $pdo->prepare(
-        'SELECT o.option_text, COUNT(a.id) AS vote_count
-         FROM poll_question_options o
-         LEFT JOIN poll_answers a ON a.option_id = o.id AND a.poll_id = ? AND a.is_draft = 0
-         WHERE o.question_id = ? GROUP BY o.id, o.option_text, o.sort_order ORDER BY o.sort_order, o.id'
+
+    $qs = $pdo->prepare(
+        "SELECT id, question_text
+         FROM poll_questions
+         WHERE poll_id = ?
+           AND status = 'active'
+         ORDER BY sort_order, id"
     );
+
+    $qs->execute([$pollId]);
+
+    $out = [];
+
+    $os = $pdo->prepare(
+        "SELECT
+            o.id,
+            o.option_text,
+            o.image_url,
+            o.sort_order,
+            COUNT(a.id) AS vote_count
+         FROM poll_question_options o
+
+         LEFT JOIN poll_answers a
+           ON a.option_id = o.id
+          AND a.poll_id = ?
+          AND a.is_draft = 0
+
+         WHERE o.question_id = ?
+
+         GROUP BY
+            o.id,
+            o.option_text,
+            o.image_url,
+            o.sort_order
+
+         ORDER BY
+            COUNT(a.id) DESC,
+            o.sort_order ASC,
+            o.id ASC"
+    );
+
     foreach ($qs->fetchAll() as $q) {
-        $os->execute([$pollId, $q['id']]);
-        $out[] = ['question' => $q['question_text'], 'options' => $os->fetchAll()];
+
+        $os->execute([
+            $pollId,
+            $q['id']
+        ]);
+
+        $out[] = [
+            'question' => $q['question_text'],
+            'options'  => $os->fetchAll()
+        ];
     }
+
     return $out;
 }
