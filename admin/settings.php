@@ -227,8 +227,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($action, ['add', 'edit'], 
     $status = (string)($_POST['status'] ?? 'draft');
     $pollType = (string)($_POST['poll_type'] ?? 'single_choice');
     $accessMode = (string)($_POST['access_mode'] ?? 'token_verification');
-    $startAt = trim((string)($_POST['start_at'] ?? '')) ?: null;
-    $endAt = trim((string)($_POST['end_at'] ?? '')) ?: null;
+    $startAtInput=trim((string)($_POST['start_at']??''));
+    $endAtInput=trim((string)($_POST['end_at']??''));
+    $startAt=null;
+    $endAt=null;
+    try{
+        $startAt=local_datetime_to_utc($startAtInput);
+        $endAt=local_datetime_to_utc($endAtInput);
+    }catch(Throwable $e){
+        $error=$e->getMessage();
+    }
     $id = (int)($_POST['id'] ?? 0);
     $allowChangeVote = !empty($_POST['allow_change_vote']) ? 1 : 0;
     $showResults = !empty($_POST['show_results']) ? 1 : 0;
@@ -239,8 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($action, ['add', 'edit'], 
     elseif (!in_array($status, $allowedStatuses, true)) $error = 'Status polling tidak valid.';
     elseif (!in_array($pollType, $allowedTypes, true)) $error = 'Tipe polling tidak valid.';
     elseif (!in_array($accessMode, $allowedAccessModes, true)) $error = 'Mode akses tidak valid.';
-    elseif (($startAt && !strtotime($startAt)) || ($endAt && !strtotime($endAt))) $error = 'Format waktu polling tidak valid.';
-    elseif ($startAt && $endAt && $startAt >= $endAt) $error = 'Waktu mulai harus lebih awal daripada waktu selesai.';
+    elseif ($startAt && $endAt && strtotime($startAt)>=strtotime($endAt)) $error='Waktu mulai harus lebih awal daripada waktu selesai.';
     else {
         try {
             $pdo->beginTransaction();
@@ -494,7 +501,10 @@ if ($editRow && $editRow['poll_type']==='questionnaire') {
     }
 }
 
-function fmt_dt(?string $v): string { return $v ? str_replace(' ','T',substr($v,0,16)) : ''; }
+function fmt_dt(?string $v): string
+    {
+        return utc_datetime_to_local($v);
+    }
 $active_menu='settings';
 $page_title='Pengaturan';
 include __DIR__.'/includes/header.php';
