@@ -11,6 +11,33 @@ $allowedStatuses = ['draft', 'scheduled', 'active', 'paused', 'closed', 'archive
 $allowedTypes = ['single_choice', 'image_choice', 'questionnaire'];
 $allowedAccessModes = ['token_verification'];
 
+function local_datetime_to_utc(?string $value): ?string
+{
+    $value=trim((string)$value);
+    if($value==='') return null;
+    $tz=new DateTimeZone(APP_TIMEZONE);
+    $dt=DateTime::createFromFormat('!Y-m-d\TH:i',$value,$tz);
+    if(!$dt){
+        $dt=DateTime::createFromFormat('!Y-m-d H:i',$value,$tz);
+    }
+    if(!$dt) throw new RuntimeException('Format waktu polling tidak valid.');
+    $dt->setTimezone(new DateTimeZone('UTC'));
+    return $dt->format('Y-m-d H:i:sP');
+}
+
+function utc_datetime_to_local(?string $value): string
+{
+    $value=trim((string)$value);
+    if($value==='') return '';
+    try{
+        $dt=new DateTime($value,new DateTimeZone('UTC'));
+        $dt->setTimezone(new DateTimeZone(APP_TIMEZONE));
+        return $dt->format('Y-m-d\TH:i');
+    }catch(Throwable $e){
+        return '';
+    }
+}
+
 // Questionnaire schema is prepared automatically for logged-in admins.
 // This removes the need to manually import a migration just to create a polling.
 try {
